@@ -1,5 +1,5 @@
 %{
-    open LANG
+    open Lang
 %}
 
 %token <int> INT
@@ -8,8 +8,6 @@
 %token RIGHT_PAREN
 %token COMMA
 %token ISZERO
-%token TRUE
-%token FALSE
 %token IF
 %token THEN
 %token ELSE
@@ -32,10 +30,10 @@
 
 %left ARROW
 
-%start <LANG.program> PROGRAM
+%start <Lang.program> pROGRAM
 %%
 
-PROGRAM:
+pROGRAM:
   | EXPRESSION                                                                                     { AProgram $1 }
 
 EXPRESSION:
@@ -52,10 +50,10 @@ EXPRESSION:
   | DEREF LEFT_PAREN EXPRESSION RIGHT_PAREN                                                        { DerefExp $3 }
   | SETREF LEFT_PAREN EXPRESSION COMMA EXPRESSION RIGHT_PAREN                                      { SetrefExp ($3, $5) }
 
-ID_TYPE_PAIR:
+ID_EXP_PAIR:
   | IDENTIFIER TYPE_INTRO EXPRESSION                                                               { ($1, $3) }
 
-ID_EXP_PAIR:
+ID_TYPE_PAIR:
   | IDENTIFIER DEF OTYPE                                                                           { ($1, $3) }
 
 OTYPE:
@@ -67,5 +65,5 @@ TYPE:
   | TYPE_VOID                                                                                      { VoidType }
   | TYPE_INT                                                                                       { IntType }
   | TYPE_BOOL                                                                                      { BoolType }
-  | separated_nonempty_list(ARROW, TYPE)                                                           { let rev_types = List.rev $1 in ProcType (List.rev (tl rev_types), hd rev_types) }
+  | LEFT_PAREN list(TYPE) ARROW TYPE RIGHT_PAREN                                                   { ProcType ($2, $4) }
   | TYPE_REF TYPE                                                                                  { RefType $2 }

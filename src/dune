@@ -1,0 +1,8 @@
+(executable
+ (name main)
+ (modules main)
+ (libraries lang analyser inferencer interpreter))
+
+(library
+ (name lang)
+ (modules lang))

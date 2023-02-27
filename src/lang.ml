@@ -23,10 +23,10 @@ EXPRESSION ::= number
 OTYPE ::= TYPE
         | "?"            to be infered
 
-TYPE ::= "()"            dont know if doable by the parser, we can just use void
+TYPE ::= "void"
        | "int"
        | "bool"
-       | TYPE "->" TYPE
+       | "(" {TYPE}* "->" TYPE ")"
        | "refto" TYPE
 
 *)

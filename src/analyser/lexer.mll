@@ -1,5 +1,8 @@
 {
     open Lexing
+    open Parser
+
+    exception SyntaxError of string
 }
 
 let white = [' ' '\t']+ 
@@ -18,8 +21,6 @@ rule read =
   | ')'        { RIGHT_PAREN }
   | ','        { COMMA }
   | "zero?"    { ISZERO }
-  | "true"     { TRUE }
-  | "false"    { FALSE }
   | "if"       { IF }
   | "then"     { THEN }
   | "else"     { ELSE }

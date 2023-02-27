@@ -1,4 +1,4 @@
-open LANG
+open Lang
 
 (* expressed values and denotated values *)
 type expval =
@@ -13,6 +13,15 @@ and environment =
   | ExtendEnvRec of string * string list * expression * environment
 
 and procedure = string list * expression * environment
+
+let procedure2string _ = "can't think of a way to represent procedures"
+
+let expval2string ev =
+  match ev with
+    NumVal num -> string_of_int num
+  | BoolVal bool -> if bool then "true" else "false"
+  | ProcVal proc -> procedure2string proc
+  | RefVal num -> "#" ^ (string_of_int num)
 
 let expval2num ev =
   match ev with
