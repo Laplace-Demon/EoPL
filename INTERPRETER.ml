@@ -53,3 +53,29 @@ let rec apply_env search_name env =
 (* procedure *)
 
 let apply_proc ((paras, body, saved_env) : procedure) (args : expval list) = value_of body (ExtendEnv (paras, args, saved_env))
+
+(* global mutable variable to imitate the memory *)
+let the_store = ref []
+
+let empty_store () : expval list = []
+
+let initialize_store () = the_store := empty_store ()
+
+let get_store () = !the_store
+
+let newref value =
+  let next_ref = List.length !the_store in
+  the_store := !the_store @ [value];
+  next_ref
+
+let deref ref =
+  List.nth !the_store ref
+
+let setref ref value =
+  let rec loop lst1 lst2 m =
+    match lst1 with
+      [] -> the_store := List.rev lst2
+    | hd :: tl ->
+        if ref = m then loop tl (value :: lst2) (m + 1)
+        else loop tl (hd :: lst2) (m + 1)
+  in loop !the_store [] 0

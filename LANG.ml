@@ -17,6 +17,9 @@ EXPRESSION ::= number
 
   multiple let binding, list, pair
 
+  binding: environment
+  procedure: OCaml procedure representation + environment
+
 *)
 
 (* type *)
