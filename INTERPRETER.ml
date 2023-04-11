@@ -50,10 +50,6 @@ let rec apply_env search_name env =
       if name = search_name then ProcVal (paras, fun_body, env)
       else apply_env search_name saved_env
 
-(* procedure *)
-
-let apply_proc ((paras, body, saved_env) : procedure) (args : expval list) = value_of body (ExtendEnv (paras, args, saved_env))
-
 (* global mutable variable to imitate the memory *)
 let the_store = ref []
 
@@ -79,3 +75,37 @@ let setref ref value =
         if ref = m then loop tl (value :: lst2) (m + 1)
         else loop tl (hd :: lst2) (m + 1)
   in loop !the_store [] 0
+
+(* interpreter *)
+
+let rec value_of exp (env : environment) : expval =
+  match exp with
+    ConstExp num -> NumVal num
+  | VarExp var -> apply_env var env
+  | DiffExp (exp1, exp2) -> NumVal ((expval2num (value_of exp1 env)) - (expval2num (value_of exp2 env)))
+  | IsZeroExp exp1 -> BoolVal (expval2num (value_of exp1 env) = 0)
+  | IfExp (exp1, exp2, exp3) -> if expval2bool (value_of exp1 env) then value_of exp2 env else value_of exp3 env
+  | LetExp (pairs, body) ->
+    let names = List.map fst pairs in
+    let exps = List.map snd pairs in
+    value_of body (ExtendEnv (names, (List.map (fun x -> value_of x env) exps), env))
+  | ProcExp (pairs, body) ->
+    let paras = List.map fst pairs in
+    ProcVal (paras, body, env)
+  | CallExp (rator, rands) -> apply_proc (expval2proc (value_of rator env)) (List.map (fun x -> value_of x env) rands)
+  | LetRecExp (_, name, pairs, fun_body, body) ->
+    let paras = List.map fst pairs in
+    value_of body (ExtendEnvRec (name, paras, fun_body, env))
+  | NewrefExp exp1 ->
+      let val1 = value_of exp1 env in
+      RefVal (newref val1)
+  | DerefExp exp1 ->
+      let val1 = value_of exp1 env in
+      deref (expval2ref val1)
+  | SetrefExp (exp1, exp2) ->
+      let val1 = value_of exp1 env in
+      let val2 = value_of exp2 env in
+      setref (expval2ref val1) val2;
+      NumVal 0
+  
+and apply_proc ((paras, body, saved_env) : procedure) (args : expval list) = value_of body (ExtendEnv (paras, args, saved_env))
