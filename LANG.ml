@@ -65,8 +65,8 @@ type expression =
   | IfExp of expression * expression * expression
   | LetExp of (string * expression) list * expression
   | ProcExp of (string * typ option) list * expression
-  | CallExp of expression * expression list
-  | LetRecExp of typ option * string * (string * typ option) list * expression * expression
+  | CallExp of expression * (expression list)
+  | LetRecExp of (typ option) * string * ((string * typ option) list) * expression * expression
   | NewrefExp of expression
   | DerefExp of expression
   | SetrefExp of expression * expression
