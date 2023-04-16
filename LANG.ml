@@ -8,8 +8,8 @@ EXPRESSION ::= number
              | "zero?" "(" EXPRESSION ")"
              | "if" EXPRESSION "then" EXPRESSION "else" EXPRESSION
              | "let" {identifier "=" EXPRESSION}* "in" EXPRESSION
-             | "letrec" type identifier "(" {identifier ":" type}* ")" "=" EXPRESSION "in" EXPRESSION
-             | "proc" "(" {identifier ":" type}* ")" EXPRESSION
+             | "letrec" OTYPE identifier "(" {identifier ":" OTYPE}* ")" "=" EXPRESSION "in" EXPRESSION
+             | "proc" "(" {identifier ":" OTYPE}* ")" EXPRESSION
              | "(" EXPRESSION {EXPRESSION}* ")"
              | "newref" "(" EXPRESSION ")"
              | "deref" "(" EXPRESSION ")"
@@ -19,7 +19,15 @@ EXPRESSION ::= number
 
   binding: environment
   procedure: OCaml procedure representation + environment
-  
+
+OTYPE ::= TYPE
+        | "?"            to be infered
+
+TYPE ::= "()"            dont know if doable by the parser, we can just use void
+       | "int"
+       | "bool"
+       | "(" TYPE "->" TYPE ")"
+       | "refto" TYPE
 
 *)
 
