@@ -1,0 +1,3 @@
+((executable
+  (name COaml)
+  (libraries List Lexing)))

@@ -1,3 +1,5 @@
+open LANG
+
 (* expressed values and denotated values *)
 type expval =
     NumVal of int

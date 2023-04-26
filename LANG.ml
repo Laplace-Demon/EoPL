@@ -26,7 +26,7 @@ OTYPE ::= TYPE
 TYPE ::= "()"            dont know if doable by the parser, we can just use void
        | "int"
        | "bool"
-       | "(" TYPE "->" TYPE ")"
+       | TYPE "->" TYPE
        | "refto" TYPE
 
 *)
